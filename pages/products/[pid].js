@@ -1,63 +1,62 @@
-import { Fragment } from "react"
-import path from 'path';
-import fs from 'fs/promises';
+import React from 'react'
+import fs from 'fs/promises'
+import path from 'path'
 
-function ProductDetailPage(props) {
+const ProductDetailPage = (props) => {
     const { loadedProduct } = props;
 
-    // 👇🏽 Use this conditional statement if fallback is set to true
     if (!loadedProduct) {
         return <p>Loading...</p>
     }
 
-    return (
-        <Fragment>
-            <h1>{loadedProduct.title}</h1>
-            <p>{loadedProduct.description}</p>
-        </Fragment>
-    )
+  return (
+    <div>
+        <h1>{loadedProduct.title}</h1>
+        <h2>{loadedProduct.description}</h2>
+    </div>
+  )
 }
 
 async function getData() {
     const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
-    const jsonData = await fs.readFile(filePath)
-    const data = JSON.parse(jsonData)
+    const jsonData = await fs.readFile(filePath);
+    const data = JSON.parse(jsonData);
 
-    return data
+    return data;
 }
 
+
 export async function getStaticProps(context) {
-    // console.log("context: ", context)
     const { params } = context;
 
     const productId = params.pid;
 
-    const data = await getData();
+    const data = await getData()
 
-    const product = data.products.find(product => product.id === productId);
+    const product = data.products.find(product => product.id === productId)
 
-    // 👇🏽use this conditional if fallback is set to true to prevent an error when searching for a page that is not available - will trigger 404 page
     if (!product) {
-        return { notFound: true }
+        return { notFound: true };
     }
 
     return {
         props: {
             loadedProduct: product
         }
-    };
+    }
 }
 
 export async function getStaticPaths() {
-    const data = await getData();
+    const data = await getData() 
 
     const ids = data.products.map(product => product.id);
-    const pathsWithParams = ids.map(id => ({ params: { pid: id } }))
-    
+
+    const pathsWithParams = ids.map(id => ({ params: { pid: id }}))
+
     return {
         paths: pathsWithParams,
         fallback: true,
-    };
+    }
 }
 
 export default ProductDetailPage
