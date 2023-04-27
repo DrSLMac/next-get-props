@@ -17,7 +17,7 @@ function HomePage(props) {
 }
 
 export async function getStaticProps() {
-  console.log('(Re-)Generating...')
+  console.log('(Re-)Generating...from getStaticProps')
   const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData)
